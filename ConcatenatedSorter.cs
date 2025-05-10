@@ -1,0 +1,111 @@
+using System.Collections.Generic;
+using System.Linq;
+using HarmonyLib;
+
+namespace SortContainers;
+
+class ConcatenatedSorter : Sorter
+{
+    class HashSetComparer : IEqualityComparer<Window.SaveData>
+    {
+        public bool Equals(Window.SaveData x, Window.SaveData y)
+        {
+            if (x == null || y == null)
+            {
+                return x == y;
+            }
+            return x.cats.SetEquals(y.cats) && (x.filter ?? "") == (y.filter ?? "") && x.sharedType == y.sharedType;
+        }
+
+        public int GetHashCode(Window.SaveData obj)
+        {
+            if (obj == null)
+            {
+                return 0;
+            }
+
+            int hash = 0;
+
+            if (obj.filter != null && obj.filter != "")
+            {
+                hash ^= obj.filter.GetHashCode();
+            }
+
+            foreach (var item in obj.cats)
+            {
+                hash ^= item.GetHashCode();
+            }
+
+            return hash;
+        }
+    }
+
+    public static void Sort(LayerInventory backpack)
+    {
+        var containers = GetContainersFromBackpack(backpack).ToList<Card>();
+        containers.Add(EClass.pc);
+
+        var grouped = containers.GroupBy(t => t.GetWindowSaveData(), new HashSetComparer());
+        foreach (var group in grouped)
+        {
+            SortContainers.Log($"Sorting group with {group.Count()} containers");
+            // TODO: Check if the container is overflowing
+
+            if (group.Count() == 1)
+            {
+                var singleUI = GetUIInventoryForCard(group.First(), backpack);
+                singleUI.Sort();
+                continue;
+            }
+
+            var tmpContainer = new List<Thing>();
+            foreach (var container in group)
+            {
+                foreach (var t in container.things.Where(t => !IsEquipped(t) && !t.IsHotItem && !t.IsContainer).ToList())
+                {
+                    // TODO: Stack
+                    tmpContainer.Add(t);
+
+                    container.RemoveThing(t);
+                }
+            }
+
+            var ui = GetUIInventoryForCard(group.First(), backpack);
+            tmpContainer.Sort(SortMode(ui), SortOrder(ui));
+
+            var dests = SortContainersByPos(group).ToList();
+            var dest = dests[0];
+            dests.RemoveAt(0);
+
+            foreach (var t in tmpContainer)
+            {
+                while (dest.things.IsFull())
+                {
+                    dest = dests[0];
+                    dests.RemoveAt(0);
+                }
+                dest.AddThing(t);
+            }
+        }
+    }
+
+    public static IEnumerable<Card> SortContainersByPos(IEnumerable<Card> containers)
+    {
+        return containers.OrderBy(c => c == EClass.pc ? -1 :  c.invX);
+    }
+
+    public static bool IsEquipped(Thing thing)
+    {
+        return thing.invX == -1;
+    }
+
+    public static UIList.SortMode SortMode(UIInventory ui)
+    {
+        return EMono.core.config.game.sortEach ? ui.window.saveData.sortMode : EMono.player.pref.sortInv;
+    }
+
+    public static bool SortOrder(UIInventory ui)
+    {
+        return EMono.core.config.game.sortEach ? ui.window.saveData.sort_ascending : EMono.player.pref.sort_ascending;
+    }
+}

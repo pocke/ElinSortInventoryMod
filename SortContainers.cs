@@ -18,10 +18,15 @@ internal static class ModInfo
 [BepInPlugin(ModInfo.Guid, ModInfo.Name, ModInfo.Version)]
 internal class SortContainers : BaseUnityPlugin
 {
+    internal static SortContainers Instance { get; private set; }
+
     private void Awake()
     {
+        Instance = this;
+
         Settings.keyCode = Config.Bind("Settings", "KeyCode", KeyCode.S, new ConfigDescription("Key to sort containers", null, null));
         Settings.keyCodeMod = Config.Bind("Settings", "KeyCodeMod", KeyCode.LeftAlt, new ConfigDescription("Modifier key to sort containers. If None is specified, it does not require a modifier key.", null, null));
+        Settings.concatContainers = Config.Bind("Settings", "ConcatContainers", false, new ConfigDescription("If true, it treats containers having the same settings as one container. If false (default), it sorts containers independently.", null, null));
     }
 
     private void Update()
@@ -40,15 +45,14 @@ internal class SortContainers : BaseUnityPlugin
     private void SortAllContainers()
     {
         var backpack = GetPCBackpack();
-        Logger.LogInfo($"Backpack: {backpack}");
-        backpack.invs[0].Sort();
 
-        var containers = backpack.Inv.Container.things.Where(t => t.IsContainer);
-        var uis = GetUIInventoryForThings(containers);
-        foreach (var ui in uis)
+        if (Settings.ConcatContainers)
         {
-            Logger.LogInfo($"UIInventory: {ui}");
-            ui.Sort();
+            ConcatenatedSorter.Sort(backpack);
+        }
+        else
+        {
+            IndependentSorter.Sort(backpack);
         }
 
         SE.Click();
@@ -59,17 +63,8 @@ internal class SortContainers : BaseUnityPlugin
         return LayerInventory.listInv.First(layer => layer.mainInv);
     }
 
-    public static IEnumerable<UIInventory> GetUIInventoryForThings(IEnumerable<Thing> things)
+    internal static void Log(object payload)
     {
-        foreach (LayerInventory item in LayerInventory.listInv)
-        {
-            foreach (UIInventory inventory in item.invs)
-            {
-                if (things.Contains(inventory.owner.Container.Thing))
-                {
-                    yield return inventory;
-                }
-            }
-        }
+        Instance!.Logger.LogInfo(payload);
     }
 }
