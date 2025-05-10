@@ -43,20 +43,12 @@ internal class SortContainers : BaseUnityPlugin
         Logger.LogInfo($"Backpack: {backpack}");
         backpack.invs[0].Sort();
 
-        foreach (var thing in backpack.Inv.Container.things)
+        var containers = backpack.Inv.Container.things.Where(t => t.IsContainer);
+        var uis = GetUIInventoryForThings(containers);
+        foreach (var ui in uis)
         {
-            if (thing.IsContainer)
-            {
-                Logger.LogInfo($"Container: {thing}");
-                var ui = GetUIInventoryForThing(thing);
-                if (ui != null)
-                {
-                    ui.Sort();
-                }
-            } else 
-            {
-                Logger.LogInfo($"Not a container: {thing}");
-            }
+            Logger.LogInfo($"UIInventory: {ui}");
+            ui.Sort();
         }
 
         SE.Click();
@@ -67,18 +59,17 @@ internal class SortContainers : BaseUnityPlugin
         return LayerInventory.listInv.First(layer => layer.mainInv);
     }
 
-    public static UIInventory GetUIInventoryForThing(Thing t)
+    public static IEnumerable<UIInventory> GetUIInventoryForThings(IEnumerable<Thing> things)
     {
         foreach (LayerInventory item in LayerInventory.listInv)
         {
             foreach (UIInventory inventory in item.invs)
             {
-                if (inventory.owner.Container.Thing == t)
+                if (things.Contains(inventory.owner.Container.Thing))
                 {
-                    return inventory;
+                    yield return inventory;
                 }
             }
         }
-        return null;
     }
 }
