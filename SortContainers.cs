@@ -4,7 +4,7 @@ using BepInEx;
 using BepInEx.Configuration;
 using HarmonyLib;
 using UnityEngine;
-using System.Linq; // LINQを使用するために追加
+using System.Linq;
 
 namespace SortContainers;
 
