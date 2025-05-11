@@ -49,7 +49,6 @@ class ConcatenatedSorter : Sorter
         foreach (var group in grouped)
         {
             SortContainers.Log($"Sorting group with {group.Count()} containers");
-            // TODO: Check if the container is overflowing
 
             if (group.Count() == 1)
             {
@@ -79,7 +78,7 @@ class ConcatenatedSorter : Sorter
 
             foreach (var t in tmpContainer)
             {
-                while (dest.things.IsFull())
+                while (dest.things.IsFull() && dests.Count > 0)
                 {
                     dest = dests[0];
                     dests.RemoveAt(0);
