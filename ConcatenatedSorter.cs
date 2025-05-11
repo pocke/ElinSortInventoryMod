@@ -72,7 +72,7 @@ class ConcatenatedSorter : Sorter
 
             tmpContainer.Sort(SortMode(ui), SortOrder(ui));
 
-            var dests = SortContainersByPos(group).ToList();
+            var dests = SortContainers(group).ToList();
             var dest = dests[0];
             dests.RemoveAt(0);
 
@@ -88,9 +88,17 @@ class ConcatenatedSorter : Sorter
         }
     }
 
-    public static IEnumerable<Card> SortContainersByPos(IEnumerable<Card> containers)
+    public static IEnumerable<Card> SortContainers(IEnumerable<Card> containers)
     {
-        return containers.OrderBy(c => c == EClass.pc ? -1 :  c.invX);
+        return containers.OrderBy(c => {
+            var saveData = c.GetWindowSaveData();
+            int priority = 0;
+            if (saveData != null)
+            {
+                priority = -saveData.priority;
+            }
+            return priority;
+        }).ThenBy(c => c == EClass.pc ? -1 :  c.invX);
     }
 
     public static UIList.SortMode SortMode(UIInventory ui)
