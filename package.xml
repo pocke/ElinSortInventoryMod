@@ -5,7 +5,72 @@
   <author>Masataka Pocke Kuwabara</author>
   <loadPriority>100</loadPriority>
   <version>0.23.129</version>
+  <tags>QoL</tags>
   <description>
-TBD
+(English is below Japanese)
+
+このMODは、インベントリ内のコンテナすべてをまとめてソートするショートカットキーを追加します。
+
+通常インベントリをソートするには、各コンテナのソートボタンを1つ1つクリックする必要があり煩雑です。
+常にソートさせることもできますが、そうするとアイテムを任意の位置に置くことができなくなり、不便なことがあります。
+
+このMODはそのような問題を解決します！ このMODによって追加されるショートカットキーを実行すると、一発でインベントリ内のすべてのコンテナをソートします。
+
+## 設定
+
+設定ファイルは`SteamLibrary\steamapps\common\Elin\BepInEx\config\me.pocke.sort-inventory.cfg`にあります。
+
+* KeyCode: ショートカットキーに使用するキーを指定します。
+    * デフォルト: S
+* KeyCodeMod: ショートカットキーに使用する修飾キーを指定します。
+    * デフォルト: LeftAlt
+    * None が指定された場合、修飾キーなしで動作します。
+* ConcatContainers: 後述するconcatモードを有効にします。
+    * デフォルト: false
+    * concatモードが無効の場合、各コンテナのソートボタンを1つ1つクリックするのと同じ動作をします。
+
+## concatモード
+
+concatモードを有効にすると、インベントリ内の同じ設定を持つコンテナを1つのコンテナとして扱ってソートします。
+
+通常は各コンテナが独立してソートされます。そのためソート後も、同じ種類のアイテムが複数のコンテナに分散してしまいます。
+concatモードでは複数のコンテナを1つのコンテナとして扱ってソートするため、同じ種類のアイテムを連続して並べられます。
+
+また、別の振り分け設定を持つコンテナは別のコンテナとして扱われます。これによって、例えばなま物を保存するためのクーラーボックスの中身が他のコンテナと混ざることはありません。
+
+------------------
+
+This MOD adds a shortcut key to sort all containers in the inventory at once.
+
+Normally, to sort the inventory, you need to click the sort button for each container one by one, which is cumbersome.
+You can always enable sorting, but doing so makes it inconvenient because you cannot place items in desired positions.
+
+This MOD solves such problems! By executing the shortcut key added by this MOD, you can sort all containers in the inventory at once.
+
+## Settings
+
+The configuration file is located at `SteamLibrary\steamapps\common\Elin\BepInEx\config\me.pocke.sort-inventory.cfg`.
+
+* KeyCode: Specifies the key to use for the shortcut key.
+    * Default: S
+* KeyCodeMod: Specifies the modifier key to use for the shortcut key.
+    * Default: LeftAlt
+    * If "None" is specified, it works without a modifier key.
+* ConcatContainers: Enables the concat mode described below.
+    * Default: false
+    * If concat mode is disabled, it behaves the same as clicking the sort button for each container one by one.
+
+## Concat Mode
+
+When concat mode is enabled, containers in the inventory with the same settings are treated as a single container for sorting.
+
+Normally, each container is sorted independently. As a result, even after sorting, the same type of items may be distributed across multiple containers.
+In concat mode, multiple containers are treated as a single container for sorting, allowing the same type of items to be arranged consecutively.
+
+Additionally, containers with different distribution settings are treated as separate containers. This ensures, for example, that the contents of a cooler box used to store perishables do not mix with other containers.
+
+------------------
+
+https://github.com/pocke/ElinSortInventoryMod
   </description>
 </Meta>
