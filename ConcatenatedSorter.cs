@@ -60,9 +60,10 @@ class ConcatenatedSorter : Sorter
             var tmpContainer = new List<Thing>();
             foreach (var container in group)
             {
-                foreach (var t in container.things.Where(t => !IsEquipped(t) && !t.IsHotItem && !t.IsContainer).ToList())
+                foreach (var t in container.things.Where(t => !t.isEquipped && !t.IsHotItem && !t.IsContainer).ToList())
                 {
                     // TODO: TryStack
+                    SortInventory.Log($"Moving {t} from {container} to tmpContainer");
                     tmpContainer.Add(t);
 
                     container.RemoveThing(t);
@@ -90,11 +91,6 @@ class ConcatenatedSorter : Sorter
     public static IEnumerable<Card> SortContainersByPos(IEnumerable<Card> containers)
     {
         return containers.OrderBy(c => c == EClass.pc ? -1 :  c.invX);
-    }
-
-    public static bool IsEquipped(Thing thing)
-    {
-        return thing.invX == -1;
     }
 
     public static UIList.SortMode SortMode(UIInventory ui)
