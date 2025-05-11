@@ -50,10 +50,10 @@ class ConcatenatedSorter : Sorter
         {
             SortContainers.Log($"Sorting group with {group.Count()} containers");
 
+            var ui = GetUIInventoryForCard(group.First(), backpack);
             if (group.Count() == 1)
             {
-                var singleUI = GetUIInventoryForCard(group.First(), backpack);
-                singleUI.Sort();
+                ui.Sort();
                 continue;
             }
 
@@ -62,14 +62,13 @@ class ConcatenatedSorter : Sorter
             {
                 foreach (var t in container.things.Where(t => !IsEquipped(t) && !t.IsHotItem && !t.IsContainer).ToList())
                 {
-                    // TODO: Stack
+                    // TODO: TryStack
                     tmpContainer.Add(t);
 
                     container.RemoveThing(t);
                 }
             }
 
-            var ui = GetUIInventoryForCard(group.First(), backpack);
             tmpContainer.Sort(SortMode(ui), SortOrder(ui));
 
             var dests = SortContainersByPos(group).ToList();
