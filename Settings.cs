@@ -1,7 +1,7 @@
 using BepInEx.Configuration;
 using UnityEngine;
 
-namespace SortContainers;
+namespace SortInventory;
 
 public static class Settings
 {

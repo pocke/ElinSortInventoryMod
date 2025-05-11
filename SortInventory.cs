@@ -6,26 +6,26 @@ using HarmonyLib;
 using UnityEngine;
 using System.Linq;
 
-namespace SortContainers;
+namespace SortInventory;
 
 internal static class ModInfo
 {
-    internal const string Guid = "me.pocke.sort-containers";
-    internal const string Name = "Sort Containers";
+    internal const string Guid = "me.pocke.sort-inventory";
+    internal const string Name = "Sort Inventory";
     internal const string Version = "1.0.0";
 }
 
 [BepInPlugin(ModInfo.Guid, ModInfo.Name, ModInfo.Version)]
-internal class SortContainers : BaseUnityPlugin
+internal class SortInventory : BaseUnityPlugin
 {
-    internal static SortContainers Instance { get; private set; }
+    internal static SortInventory Instance { get; private set; }
 
     private void Awake()
     {
         Instance = this;
 
-        Settings.keyCode = Config.Bind("Settings", "KeyCode", KeyCode.S, new ConfigDescription("Key to sort containers", null, null));
-        Settings.keyCodeMod = Config.Bind("Settings", "KeyCodeMod", KeyCode.LeftAlt, new ConfigDescription("Modifier key to sort containers. If None is specified, it does not require a modifier key.", null, null));
+        Settings.keyCode = Config.Bind("Settings", "KeyCode", KeyCode.S, new ConfigDescription("Key to sort the inventory", null, null));
+        Settings.keyCodeMod = Config.Bind("Settings", "KeyCodeMod", KeyCode.LeftAlt, new ConfigDescription("Modifier key to sort the inventory. If None is specified, it does not require a modifier key.", null, null));
         Settings.concatContainers = Config.Bind("Settings", "ConcatContainers", false, new ConfigDescription("If true, it treats containers having the same settings as one container. If false (default), it sorts containers independently.", null, null));
     }
 

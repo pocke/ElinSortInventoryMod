@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using HarmonyLib;
 
-namespace SortContainers;
+namespace SortInventory;
 
 class ConcatenatedSorter : Sorter
 {
@@ -48,7 +48,7 @@ class ConcatenatedSorter : Sorter
         var grouped = containers.GroupBy(t => t.GetWindowSaveData(), new HashSetComparer());
         foreach (var group in grouped)
         {
-            SortContainers.Log($"Sorting group with {group.Count()} containers");
+            SortInventory.Log($"Sorting group with {group.Count()} containers");
 
             var ui = GetUIInventoryForCard(group.First(), backpack);
             if (group.Count() == 1)

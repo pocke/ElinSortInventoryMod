@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace SortContainers;
+namespace SortInventory;
 
 class IndependentSorter : Sorter
 {
@@ -14,7 +14,7 @@ class IndependentSorter : Sorter
 
         foreach (var ui in uis)
         {
-            SortContainers.Log($"UIInventory: {ui}");
+            SortInventory.Log($"UIInventory: {ui}");
             ui.Sort();
         }
     }

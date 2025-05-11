@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Meta>
-  <title>Sort Containers</title>
-  <id>me.pocke.sort-containers</id>
+  <title>Sort Inventory</title>
+  <id>me.pocke.sort-inventory</id>
   <author>Masataka Pocke Kuwabara</author>
   <loadPriority>100</loadPriority>
   <version>0.23.129</version>
