@@ -5,7 +5,7 @@ class Sorter
 {
 
     public static IEnumerable<Thing> GetContainersFromBackpack(LayerInventory backpack) {
-        return backpack.Inv.Container.things.Where(t => t.IsContainer && t.things.owner.trait is not TraitToolBelt).ToList();
+        return backpack.Inv.Container.things.Where(t => t.IsContainer && !IsContainerLocked(t) && t.things.owner.trait is not TraitToolBelt).ToList();
     }
 
     public static UIInventory GetUIInventoryForCard(Card card, LayerInventory backpack)
@@ -40,5 +40,10 @@ class Sorter
                 }
             }
         }
+    }
+
+    private static bool IsContainerLocked(Thing container)
+    {
+        return container.trait.owner.c_lockLv > 0;
     }
 }
