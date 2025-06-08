@@ -48,9 +48,15 @@ class ConcatenatedSorter : Sorter
         var grouped = containers.GroupBy(t => t.GetWindowSaveData(), new HashSetComparer());
         foreach (var group in grouped)
         {
-            SortInventory.Log($"Sorting group with {group.Count()} containers");
+            var ui = group.Select(container => GetUIInventoryForCard(container, backpack)).FirstOrDefault(ui => ui != null);
+            if (ui == null)
+            {
+                SortInventory.Log($"No UI found for group with {group.Count()} containers; ${group.First()}");
+                continue;
+            }
 
-            var ui = GetUIInventoryForCard(group.First(), backpack);
+            SortInventory.Log($"Sorting group with {group.Count()} containers; ${group.First()}");
+
             if (group.Count() == 1)
             {
                 ui.Sort();
