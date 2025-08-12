@@ -45,6 +45,12 @@ internal class SortInventory : BaseUnityPlugin
     private void SortAllContainers()
     {
         var backpack = GetPCBackpack();
+        if (backpack == null)
+        {
+            Log("No backpack found.");
+            SE.CancelAction();
+            return;
+        }
 
         if (Settings.ConcatContainers)
         {
@@ -60,7 +66,7 @@ internal class SortInventory : BaseUnityPlugin
 
     private LayerInventory GetPCBackpack()
     {
-        return LayerInventory.listInv.First(layer => layer.mainInv);
+        return LayerInventory.listInv.FirstOrDefault(layer => layer.mainInv);
     }
 
     internal static void Log(object payload)
