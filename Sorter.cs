@@ -1,11 +1,28 @@
 using System.Collections.Generic;
 using System.Linq;
 
+namespace SortInventory;
+
 class Sorter
 {
 
-    public static IEnumerable<Thing> GetContainersFromBackpack(LayerInventory backpack) {
-        return backpack.Inv.Container.things.Where(t => t.IsContainer && !IsContainerLocked(t) && t.things.owner.trait is not TraitToolBelt).ToList();
+    public static IEnumerable<Thing> GetContainersFromBackpack(LayerInventory backpack)
+    {
+        var containers = backpack.Inv.Container.things.Where(t => t.IsContainer && !IsContainerLocked(t) && t.things.owner.trait is not TraitToolBelt).ToList();
+
+        return containers.Where(container =>
+        {
+            var name = container.Name;
+            foreach (var pattern in Settings.IgnoredContainerPattern)
+            {
+                if (name.Contains(pattern))
+                {
+                    SortInventory.Log($"Ignoring container '{name}' matching pattern '{pattern}'");
+                    return false;
+                }
+            }
+            return true;
+        });
     }
 
     public static UIInventory GetUIInventoryForCard(Card card, LayerInventory backpack)
