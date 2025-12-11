@@ -6,6 +6,10 @@ namespace SortInventory;
 
 class ConcatenatedSorter : Sorter
 {
+    // cats: Categories with "Advanced Distribution" settings
+    // filter: Word filter
+    // sharedType: Personal / Shared permission
+    // flag: Categories without "Advanced Distribution" settings
     class HashSetComparer : IEqualityComparer<Window.SaveData>
     {
         public bool Equals(Window.SaveData x, Window.SaveData y)
@@ -14,7 +18,7 @@ class ConcatenatedSorter : Sorter
             {
                 return x == y;
             }
-            return x.cats.SetEquals(y.cats) && (x.filter ?? "") == (y.filter ?? "") && x.sharedType == y.sharedType;
+            return x.cats.SetEquals(y.cats) && (x.filter ?? "") == (y.filter ?? "") && x.sharedType == y.sharedType && x.flag == y.flag;
         }
 
         public int GetHashCode(Window.SaveData obj)
@@ -26,15 +30,19 @@ class ConcatenatedSorter : Sorter
 
             int hash = 0;
 
+            foreach (var item in obj.cats)
+            {
+                hash ^= item.GetHashCode();
+            }
+
             if (obj.filter != null && obj.filter != "")
             {
                 hash ^= obj.filter.GetHashCode();
             }
 
-            foreach (var item in obj.cats)
-            {
-                hash ^= item.GetHashCode();
-            }
+            hash ^= obj.sharedType.GetHashCode();
+
+            hash ^= obj.flag.GetHashCode();
 
             return hash;
         }
@@ -96,7 +104,8 @@ class ConcatenatedSorter : Sorter
 
     public static IEnumerable<Card> SortContainers(IEnumerable<Card> containers)
     {
-        return containers.OrderBy(c => {
+        return containers.OrderBy(c =>
+        {
             var saveData = c.GetWindowSaveData();
             int priority = 0;
             if (saveData != null)
@@ -104,7 +113,7 @@ class ConcatenatedSorter : Sorter
                 priority = -saveData.priority;
             }
             return priority;
-        }).ThenBy(c => c == EClass.pc ? -1 :  c.invX);
+        }).ThenBy(c => c == EClass.pc ? -1 : c.invX);
     }
 
     public static UIList.SortMode SortMode(UIInventory ui)
