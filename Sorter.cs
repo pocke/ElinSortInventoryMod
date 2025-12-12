@@ -8,7 +8,14 @@ class Sorter
 
     public static IEnumerable<Thing> GetContainersFromBackpack(LayerInventory backpack)
     {
-        var containers = backpack.Inv.Container.things.Where(t => t.IsContainer && !IsContainerLocked(t) && t.things.owner.trait is not TraitToolBelt).ToList();
+        var containersInBackpack = backpack.Inv.Container.things.Where(t => IsOpenContainer(t));
+        var containersInToolBelt = new List<Thing>();
+        foreach (var belt in containersInBackpack.Where(t => t.things.owner.trait is TraitToolBelt))
+        {
+            containersInToolBelt.AddRange(belt.things.Where(t => IsOpenContainer(t)));
+        }
+
+        var containers = containersInBackpack.Where(t => t.things.owner.trait is not TraitToolBelt).Concat(containersInToolBelt);
 
         return containers.Where(container =>
         {
@@ -62,5 +69,10 @@ class Sorter
     private static bool IsContainerLocked(Thing container)
     {
         return container.trait.owner.c_lockLv > 0;
+    }
+
+    private static bool IsOpenContainer(Thing t)
+    {
+        return t.IsContainer && !IsContainerLocked(t);
     }
 }
