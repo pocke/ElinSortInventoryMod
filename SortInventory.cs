@@ -12,7 +12,7 @@ internal static class ModInfo
 {
     internal const string Guid = "me.pocke.sort-inventory";
     internal const string Name = "Sort Inventory";
-    internal const string Version = "1.1.0";
+    internal const string Version = "1.1.1";
 }
 
 [BepInPlugin(ModInfo.Guid, ModInfo.Name, ModInfo.Version)]
